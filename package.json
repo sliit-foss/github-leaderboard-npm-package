@@ -1,0 +1,23 @@
+{
+  "name": "github-leaderboard-npm-package",
+  "version": "1.0.0",
+  "description": "A node module for fetching a list of highest contributors to a certain Github organization or repository",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sliit-foss/github-leaderboard-npm-package.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sliit-foss/github-leaderboard-npm-package/issues"
+  },
+  "homepage": "https://github.com/sliit-foss/github-leaderboard-npm-package#readme",
+  "dependencies": {
+    "axios": "^0.26.0"
+  }
+}
