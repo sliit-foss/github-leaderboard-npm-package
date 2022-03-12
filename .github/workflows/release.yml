@@ -20,6 +20,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Publish package on NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - id: read_version
         run: |
@@ -35,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Latest
-          release_name: Leaderboard v${{fromJson(steps.read_version.outputs.packageJson).version}}
+          tag_name: v${{fromJson(steps.read_version.outputs.packageJson).version}}
+          release_name: v${{fromJson(steps.read_version.outputs.packageJson).version}}
           draft: false
           prerelease: false
