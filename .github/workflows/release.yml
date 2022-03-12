@@ -20,14 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Publish package on NPM
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Read package.json
-        uses: dutscher/read-package-json-endpoint-actions@v1.33.7
-        id: package-json-version
+      - id: read_version
+        run: |
+          content=`cat ./path/to/package.json`
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=packageJson::$content"
 
       - name: Create Release
         id: create_release
@@ -36,6 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: Latest
-          release_name: Leaderboard v${{ steps.package-json-version.outputs.version }}
+          release_name: Leaderboard v${{fromJson(steps.read_version.outputs.packageJson).version}}
           draft: false
           prerelease: false
