@@ -55,7 +55,7 @@ leaderboard.getRepositoryLeaderboard({
 leaderboard.initialize('GITHUB_ACCESS_TOKEN')
 const getOrganizationLeaderboard = async function () {
     const results = await leaderboard.getOrganizationLeaderboard({
-        orgs: 'sliit-foss',
+        orgs: ['sliit-foss'],
         filters: {
             dateRange: '2021-10-14..2021-10-31',
             label: 'hacktoberfest-accepted'
