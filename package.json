@@ -2,7 +2,7 @@
   "name": "github-leaderboard-npm-package",
   "version": "1.0.3",
   "description": "A node module for fetching a list of highest contributors to a certain Github organization or repository",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

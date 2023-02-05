@@ -5,7 +5,13 @@ const getPaginatedResults = async (queryFunction, organizations, filters, owner,
   let lastPage = !results.data.data.search.pageInfo.hasNextPage;
   let cursor = results.data.data.search.pageInfo.endCursor;
   let pages = 0;
-  while (!lastPage && pages <= 50) {
+
+  if(filters.pageCount){
+
+  }else{
+    
+  }
+  while (!lastPage && pages <= pageCount ) {
     const nextPageResults = await queryFunction(organizations, filters, cursor, owner, repoName);
     finalResults.push(...nextPageResults.data.data.search.edges);
     lastPage = !nextPageResults.data.data.search.pageInfo.hasNextPage;
