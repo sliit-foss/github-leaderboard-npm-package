@@ -1,35 +1,49 @@
-const axios = require("../libs/axios");
+import { instance } from "../libs/axios";
 
 const getOrganizationPRs = (orgs, filters, afterCursor) => {
-
   let queryOrgs = "";
 
   orgs.forEach((organization) => {
     queryOrgs += `user:${organization} `;
   });
 
-  const query = `query { ${searchQuery(queryOrgs, filters, afterCursor )} }`;
+  let query = "";
 
-  return axios.instance.post("", { query });
-};
-
-const getRepositoryPRs = (orgs, filters, afterCursor, owner, repoName ) => {
-
-  const query = `query { ${searchQuery(`repo:${owner}/${repoName}`, filters, afterCursor )} }`;
-  
-  return axios.instance.post("", { query });
-};
-
-const searchQuery = (searchEntity, filters, afterCursor) => {
-
-  if(filters.pageSize){
-    var pageSizeStr = `first: ${filters.pageSize},`
-  }else{
-    pageSizeStr = ""
+  if (filters.pagination) {
+    query = `query { ${paginatedSearchQuery(
+      queryOrgs,
+      filters,
+      afterCursor
+    )} }`;
+  } else {
+    query = `query { ${nonPaginatedSearchQuery(
+      queryOrgs,
+      filters,
+      afterCursor
+    )} }`;
   }
 
+  return instance.post("", { query });
+};
+
+const getRepositoryPRs = (orgs, filters, afterCursor, owner, repoName) => {
+  const query = `query { ${paginatedSearchQuery(
+    `repo:${owner}/${repoName}`,
+    filters,
+    afterCursor
+  )} }`;
+
+  return instance.post("", { query });
+};
+
+const nonPaginatedSearchQuery = (searchEntity, filters, afterCursor) => {
+
   return `
-  search(${pageSizeStr} type: ISSUE, query: "${searchEntity} is:pr is:merged ${ filters.dateRange ? `created:${filters.dateRange}` : "" } ${filters.label ? `label:${filters.label}` : ""}", ${afterCursor != "" ? `after: "${afterCursor}"` : ""}) {
+  search( type: ISSUE, query: "${searchEntity} is:pr is:merged ${
+    filters.dateRange ? `created:${filters.dateRange}` : ""
+  } ${filters.label ? `label:${filters.label}` : ""}", ${
+    afterCursor != "" ? `after: "${afterCursor}"` : ""
+  }) {
     issueCount
     edges {
       node {
@@ -46,7 +60,51 @@ const searchQuery = (searchEntity, filters, afterCursor) => {
       endCursor
       hasNextPage
     }
-  }`
-}
+  }`;
+};
 
-module.exports = { getOrganizationPRs, getRepositoryPRs };
+const paginatedSearchQuery = (searchEntity, filters, afterCursor) => {
+  if (filters.pageSize) {
+    var pageSizeStr = `first: ${filters.pageSize},`;
+
+    var pageInfo = `
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    `;
+  } else {
+    pageSizeStr = "";
+    pageInfo = "";
+  }
+
+  return `
+  search(first: ${filters.pageSize} type: ISSUE, query: "${searchEntity} is:pr is:merged ${
+    filters.dateRange ? `created:${filters.dateRange}` : ""
+  } ${filters.label ? `label:${filters.label}` : ""}", ${
+    afterCursor != "" ? `after: "${afterCursor}"` : ""
+  }) {
+    issueCount
+    edges {
+      node {
+        ... on PullRequest {
+          title
+          author {
+            login
+            avatarUrl
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }`;
+};
+
+
+export default {
+  getOrganizationPRs,
+  getRepositoryPRs,
+};

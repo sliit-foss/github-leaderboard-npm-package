@@ -1,7 +1,9 @@
 const generateLeaderboardRecords = (pullRequests) => {
   const leaderboard = {};
+
   pullRequests.forEach((p) => {
     const _author = p.node.author.login;
+
     if (!Object.keys(leaderboard).includes(_author)) {
       leaderboard[_author] = {
         url: p.node.author.avatarUrl,
@@ -12,7 +14,8 @@ const generateLeaderboardRecords = (pullRequests) => {
       leaderboard[_author].points += 10;
     }
   });
+
   return Object.values(leaderboard).sort((a, b) => b.points - a.points);
 };
 
-module.exports = { generateLeaderboardRecords };
+export default { generateLeaderboardRecords };
