@@ -16,7 +16,7 @@ const getRepositoryPRs = (orgs, filters, afterCursor, owner, repoName ) => {
 
 const searchQuery = (searchEntity, filters, afterCursor,) => {
   return `
-  search(first: 100, type: ISSUE, query: "${searchEntity} is:pr is:merged ${ filters.dateRange ? `created:${filters.dateRange}` : "" } ${filters.label ? `label:${filters.label}` : ""}", ${afterCursor != "" ? `after: "${afterCursor}"` : ""}) {
+  search(first: ${filters.pageSize ?? 100}, type: ISSUE, query: "${searchEntity} is:pr is:merged ${ filters.dateRange ? `created:${filters.dateRange}` : "" } ${filters.label ? `label:${filters.label}` : ""}", ${afterCursor != "" ? `after: "${afterCursor}"` : ""}) {
     issueCount
     edges {
       node {
